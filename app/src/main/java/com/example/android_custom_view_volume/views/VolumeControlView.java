@@ -42,10 +42,17 @@ public class VolumeControlView extends View {
 
         if (attrs != null) {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.VolumeControlView);
-            outerColor = typedArray.getResourceId(R.styleable.VolumeControlView_outer_color,R.color.colorPrimaryDark);
-            innerColor = typedArray.getResourceId(R.styleable.VolumeControlView_inner_color,R.color.colorPrimaryAccent);
-            knobColor = typedArray.getResourceId(R.styleable.VolumeControlView_inner_color,R.color.colorPrimaryAccent);
+            outerColor = typedArray.getResourceId(R.styleable.VolumeControlView_outer_color, R.color.colorPrimaryDark);
+            innerColor = typedArray.getResourceId(R.styleable.VolumeControlView_inner_color, R.color.colorPrimary);
+            knobColor = typedArray.getResourceId(R.styleable.VolumeControlView_knob_color, R.color.colorAccent);
+            typedArray.recycle();
+
+            outerCircle.setColor(outerColor);
+            innerCircle.setColor(innerColor);
+            knobCircle.setColor(knobColor);
         }
+
+
     }
 
     @Override
@@ -54,9 +61,15 @@ public class VolumeControlView extends View {
 
         float centerX = getWidth() / 2f;
         float centerY = getHeight() / 2f;
-        float outerRadius = (centerX > centerY ? centerX : centerY) * 0.9f;
+        float outerRadius = (centerX < centerY ? centerX : centerY) * 0.9f;
+        float innerRadius = (centerX < centerY ? centerX : centerY) * 0.75f;
+        float knobRadius = (centerX < centerY ? centerX : centerY) * 0.1f;
 
+//        canvas.rotate(90);
         canvas.drawCircle(centerX, centerY, outerRadius, outerCircle);
+        canvas.drawCircle(centerX, centerY, innerRadius, innerCircle);
+        canvas.drawCircle(centerX * .5f, centerY, knobRadius, knobCircle);
+
 
     }
 }
