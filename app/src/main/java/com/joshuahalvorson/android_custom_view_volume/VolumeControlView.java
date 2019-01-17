@@ -6,11 +6,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class VolumeControlView extends View {
 
     Paint paintOuterCircle, paintInnerCircle, paintSmallInnerCircle;
+    int circleRotation;
 
     public VolumeControlView(Context context) {
         super(context);
@@ -33,28 +35,31 @@ public class VolumeControlView extends View {
     }
 
     protected void init(AttributeSet attrs){
-        paintOuterCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintOuterCircle = new Paint();
         paintOuterCircle.setStyle(Paint.Style.FILL);
-        paintOuterCircle.setColor(Color.BLACK); //TODO: set parameter
+        paintOuterCircle.setColor(Color.parseColor("#CD5C5C")); //TODO: set parameter
 
         paintInnerCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintInnerCircle.setStyle(Paint.Style.STROKE);
         paintInnerCircle.setStrokeWidth(3);
         paintInnerCircle.setColor(Color.WHITE); //TODO: set parameter
 
-        paintSmallInnerCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintSmallInnerCircle = new Paint();
         paintSmallInnerCircle.setStyle(Paint.Style.FILL);
-        paintSmallInnerCircle.setColor(Color.RED); //TODO: set parameter
+        paintSmallInnerCircle.setColor(Color.parseColor("#444B6E")); //TODO: set parameter
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         float width = getWidth() / 2f;
         float height = getHeight() / 2f;
-        int radius = 0;
 
+        circleRotation = -45;
+        canvas.rotate(circleRotation, width, height);
+
+        int radius;
+        radius = 100;
         if(width < height){
             radius = (int)(width) - 20;
         }else if (height < width){
@@ -64,15 +69,8 @@ public class VolumeControlView extends View {
         int innerCircleRadius = (int) (radius * .92f);
         int smallInnerCircleRadius = (int) (radius * .08f);
 
-        canvas.rotate(-45, width, height);
-
-        canvas.drawPaint(paintOuterCircle);
         canvas.drawCircle(width, height, radius, paintOuterCircle);
-
-        canvas.drawPaint(paintInnerCircle);
         canvas.drawCircle(width, height, innerCircleRadius, paintInnerCircle);
-
-        canvas.drawPaint(paintSmallInnerCircle);
         canvas.drawCircle(width - (innerCircleRadius - smallInnerCircleRadius - 20), height, smallInnerCircleRadius, paintSmallInnerCircle);
 
     }
