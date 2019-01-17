@@ -12,7 +12,7 @@ import android.view.View;
 public class VolumeControlView extends View {
 
     Paint paintOuterCircle, paintInnerCircle, paintSmallInnerCircle;
-    int circleRotation;
+    int circleRotation = -45;
 
     public VolumeControlView(Context context) {
         super(context);
@@ -35,7 +35,7 @@ public class VolumeControlView extends View {
     }
 
     protected void init(AttributeSet attrs){
-        paintOuterCircle = new Paint();
+        paintOuterCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintOuterCircle.setStyle(Paint.Style.FILL);
         paintOuterCircle.setColor(Color.parseColor("#CD5C5C")); //TODO: set parameter
 
@@ -44,7 +44,7 @@ public class VolumeControlView extends View {
         paintInnerCircle.setStrokeWidth(3);
         paintInnerCircle.setColor(Color.WHITE); //TODO: set parameter
 
-        paintSmallInnerCircle = new Paint();
+        paintSmallInnerCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintSmallInnerCircle.setStyle(Paint.Style.FILL);
         paintSmallInnerCircle.setColor(Color.parseColor("#444B6E")); //TODO: set parameter
     }
@@ -55,7 +55,6 @@ public class VolumeControlView extends View {
         float width = getWidth() / 2f;
         float height = getHeight() / 2f;
 
-        circleRotation = -45;
         canvas.rotate(circleRotation, width, height);
 
         int radius;
