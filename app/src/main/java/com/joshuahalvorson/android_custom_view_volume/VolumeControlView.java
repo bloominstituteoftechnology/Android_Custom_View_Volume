@@ -57,6 +57,7 @@ public class VolumeControlView extends View {
             paintOuterCircle.setColor(typedArray.getColor(R.styleable.VolumeControlView_outerCircleColor, Color.BLACK));
             paintInnerCircle.setColor(typedArray.getColor(R.styleable.VolumeControlView_innerCircleColor, Color.WHITE));
             paintSmallInnerCircle.setColor(typedArray.getColor(R.styleable.VolumeControlView_knobColor, Color.RED));
+            typedArray.recycle();
         }
     }
 
