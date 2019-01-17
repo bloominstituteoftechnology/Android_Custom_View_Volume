@@ -6,13 +6,17 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 public class VolumeControlView extends View {
 
     Paint paintOuterCircle, paintInnerCircle, paintSmallInnerCircle;
-    int circleRotation = -45;
+    int circleRotation = 0;
+    int distanceTraveled = 0, circleEndPoint = 0, circleStartPoint = 0;
+    int currentVolume;
 
     public VolumeControlView(Context context) {
         super(context);
@@ -49,6 +53,46 @@ public class VolumeControlView extends View {
         paintSmallInnerCircle.setColor(Color.parseColor("#444B6E")); //TODO: set parameter
     }
 
+    public int getCurrentVolume() {
+        return currentVolume;
+    }
+
+    public void setCurrentVolume(int currentVolume) {
+        this.currentVolume =  currentVolume;
+        //Log.i("currentVolume", Integer.toString(this.currentVolume));
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) { // triggered each time the touch state changes
+        int minimumRotation = 0;
+        int maximumRotation = 255;
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                circleStartPoint = (int) event.getX();
+                //Log.i("circlePressed","Touched: Start point - " + Integer.toString(circleStartPoint));
+                break;
+            case MotionEvent.ACTION_MOVE:
+                circleEndPoint = (int) event.getX();
+                //Log.i("circlePressed", "End point - " + Integer.toString(circleEndPoint));
+                distanceTraveled = (circleEndPoint - circleStartPoint) / 95;
+                circleRotation = circleRotation + (distanceTraveled);
+                if(circleRotation < minimumRotation){
+                    circleRotation = minimumRotation;
+                }
+                if(circleRotation > maximumRotation){
+                    circleRotation = maximumRotation;
+                }
+                setCurrentVolume((int) (circleRotation / 2.55f));
+                invalidate();
+                //Log.i("circlePressed", Integer.toString(distanceTraveled));
+                break;
+            case MotionEvent.ACTION_UP:
+                Toast.makeText(getContext(), "Volume is at " + currentVolume + "%", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -70,7 +114,7 @@ public class VolumeControlView extends View {
 
         canvas.drawCircle(width, height, radius, paintOuterCircle);
         canvas.drawCircle(width, height, innerCircleRadius, paintInnerCircle);
-        canvas.drawCircle(width - (innerCircleRadius - smallInnerCircleRadius - 20), height, smallInnerCircleRadius, paintSmallInnerCircle);
+        canvas.drawCircle(width - (innerCircleRadius - (smallInnerCircleRadius * 2) - 80), height + (innerCircleRadius * .5f ), smallInnerCircleRadius, paintSmallInnerCircle);
 
     }
 }
