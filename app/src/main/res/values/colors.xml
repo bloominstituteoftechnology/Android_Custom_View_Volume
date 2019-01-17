@@ -3,4 +3,8 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="olivine">#9AB87A</color>
+    <color name="independence">#444B6E</color>
+    <color name="pastelYellow">#F8F991</color>
 </resources>

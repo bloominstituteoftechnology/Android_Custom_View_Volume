@@ -1,6 +1,7 @@
 package com.joshuahalvorson.android_custom_view_volume;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,6 +11,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
+import java.lang.reflect.Type;
 
 public class VolumeControlView extends View {
 
@@ -41,16 +44,20 @@ public class VolumeControlView extends View {
     protected void init(AttributeSet attrs){
         paintOuterCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintOuterCircle.setStyle(Paint.Style.FILL);
-        paintOuterCircle.setColor(Color.parseColor("#CD5C5C")); //TODO: set parameter
 
         paintInnerCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintInnerCircle.setStyle(Paint.Style.STROKE);
         paintInnerCircle.setStrokeWidth(3);
-        paintInnerCircle.setColor(Color.WHITE); //TODO: set parameter
 
         paintSmallInnerCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintSmallInnerCircle.setStyle(Paint.Style.FILL);
-        paintSmallInnerCircle.setColor(Color.parseColor("#444B6E")); //TODO: set parameter
+
+        if(attrs != null){
+            TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.VolumeControlView);
+            paintOuterCircle.setColor(typedArray.getColor(R.styleable.VolumeControlView_outerCircleColor, Color.BLACK));
+            paintInnerCircle.setColor(typedArray.getColor(R.styleable.VolumeControlView_innerCircleColor, Color.WHITE));
+            paintSmallInnerCircle.setColor(typedArray.getColor(R.styleable.VolumeControlView_knobColor, Color.RED));
+        }
     }
 
     public int getCurrentVolume() {
