@@ -13,7 +13,6 @@ import android.view.View;
 import com.example.android_custom_view_volume.R;
 
 public class VolumeControlView extends View {
-    private static final String TAG = "Logging";
     public static final int MAX_ANGLE = 270;
     protected Paint outerCirclePaint, innerCirclePaint, knobCirclePaint;
     protected int outerColor, innerColor, knobColor, rotationAngle, volumeIncrement;
