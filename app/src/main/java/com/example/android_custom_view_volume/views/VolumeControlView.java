@@ -110,6 +110,9 @@ public class VolumeControlView extends View {
                 }
                 startRotationAngle = newRotationAngle;
                 if (!((clockwise && atTopStop) || (!clockwise && atBottomStop))) {
+                    if (Math.abs(differenceAngle) > 10) {
+                        differenceAngle = clockwise ? 10 : -10;
+                    }
                     rotationAngle = (int) (differenceAngle + rotationAngle);
                     if (rotationAngle > MAX_ANGLE) {
                         rotationAngle = MAX_ANGLE;
