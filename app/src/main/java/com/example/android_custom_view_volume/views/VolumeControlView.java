@@ -18,6 +18,7 @@ public class VolumeControlView extends View {
     protected int rotationAngle;
     float centerX, centerY, outerRadius, innerRadius, knobRadius;
     double startRotationAngle;
+    boolean clockwise, atBottomStop, atTopStop;
 
 
     public VolumeControlView(Context context) {
@@ -82,21 +83,36 @@ public class VolumeControlView extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                clockwise = true;
+                atBottomStop = false;
+                atTopStop = false;
                 startRotationAngle = Math.toDegrees(Math.atan2(event.getX() - centerX, centerY - event.getY()));
                 break;
             case MotionEvent.ACTION_MOVE:
                 double newRotationAngle = Math.toDegrees(Math.atan2(event.getX() - centerX, centerY - event.getY()));
                 double differenceAngle = newRotationAngle - startRotationAngle;
-                startRotationAngle = newRotationAngle;
-                rotationAngle = (int) (differenceAngle + rotationAngle);
-                if (rotationAngle > 360) {
-                    rotationAngle -= 360;
-                } else if (rotationAngle < 0) {
-                    rotationAngle += 360;
+                if (differenceAngle > 0) {
+                    clockwise = true;
+                } else {
+                    clockwise = false;
                 }
-                invalidate(); // this will cause the onDraw method to be called again with your new values
+                startRotationAngle = newRotationAngle;
+                if (!((clockwise && atTopStop) || (!clockwise && atBottomStop))) {
+                    rotationAngle = (int) (differenceAngle + rotationAngle);
+                if (rotationAngle > 270) {
+                    rotationAngle = 270;
+                    atBottomStop = true;
+                } else if (rotationAngle < 0) {
+                    rotationAngle = 0;
+                    atTopStop = true;
+                } else {
+                    atBottomStop = false;
+                    atTopStop = false;
+                }
+                    invalidate();
+                }
                 break;
-            case MotionEvent.ACTION_UP: // triggered when touch ends
+            case MotionEvent.ACTION_UP:
                 break;
         }
         return true;
