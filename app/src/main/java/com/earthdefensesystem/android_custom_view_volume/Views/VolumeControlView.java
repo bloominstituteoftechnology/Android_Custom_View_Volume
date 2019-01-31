@@ -6,11 +6,14 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
 import com.earthdefensesystem.android_custom_view_volume.R;
+
+import static android.content.ContentValues.TAG;
 
 public class VolumeControlView extends View {
 
@@ -62,14 +65,20 @@ public class VolumeControlView extends View {
 
         width = getWidth() / 2f;
         height = getHeight() / 2f;
-        outerCircleRadius = (width < height ? width : height) * 1f;
-        innerCircleRadius = (width < height ? width : height) * 0.75f;
-        knobDistanceFromCenter = (width < height ? width : height) * .5f;
-        knobRadius = knobDistanceFromCenter * 0.1f;
+        if (width < height){
+            outerCircleRadius = width * 1f;
+            innerCircleRadius = width * .75f;
+            knobDistanceFromCenter = width *.3f;
+        } else {
+            outerCircleRadius = height *1f;
+            innerCircleRadius = height *.75f;
+            knobDistanceFromCenter = height *.3f;
+        }
+        knobRadius = knobDistanceFromCenter * 0.6f;
 
         canvas.drawCircle(width, height, outerCircleRadius, outerCirclePaint);
         canvas.drawCircle(width, height, innerCircleRadius, innerCirclePaint);
-        canvas.drawCircle(width/2, height/2, innerCircleRadius/3, knobPaint);
+        canvas.drawCircle(width/3, height/3, innerCircleRadius/3, knobPaint);
 
 
         canvas.rotate(knobRotation, width, height);
@@ -84,6 +93,7 @@ public class VolumeControlView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 volumeStart = (int) event.getX();
+                Log.d(TAG, "Action was DOWN");
                 break;
             case MotionEvent.ACTION_MOVE:
                 volumeEnd = (int) event.getX();
@@ -99,6 +109,7 @@ public class VolumeControlView extends View {
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
+                Log.d(TAG, "Action was UP");
                 break;
         }
         return true;
