@@ -18,8 +18,8 @@ import static android.content.ContentValues.TAG;
 public class VolumeControlView extends View {
 
     float width, height, outerCircleRadius, innerCircleRadius, knobRadius, knobDistanceFromCenter;
-    protected int knobRotation = 0, minRotate = 0, maxRotate = 270, dialVolume,
-            volumeStart = 0, volumeEnd = 0, volumeRadius = 0;
+    protected int knobRotation = 0, dialVolume, volumeStart = 0, volumeEnd = 0, volumeDistance = 0;
+    private static final int  minRotate = 0, maxRotate = 270;
     
     protected Paint innerCirclePaint, outerCirclePaint, knobPaint;
 
@@ -51,17 +51,55 @@ public class VolumeControlView extends View {
 
         if (attrs != null) {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.VolumeControlView);
-            outerCirclePaint.setColor(typedArray.getColor(R.styleable.VolumeControlView_innerCircleColor, getResources().getColor(R.color.colorInnerCircle)));
-            innerCirclePaint.setColor(typedArray.getColor(R.styleable.VolumeControlView_outerCircleColor, getResources().getColor(R.color.colorOuterCircle)));
+            outerCirclePaint.setColor(typedArray.getColor(R.styleable.VolumeControlView_innerCircleColor, getResources().getColor(R.color.colorOuterCircle)));
+            innerCirclePaint.setColor(typedArray.getColor(R.styleable.VolumeControlView_outerCircleColor, getResources().getColor(R.color.colorInnerCircle)));
             knobPaint.setColor(typedArray.getColor(R.styleable.VolumeControlView_knobColor, getResources().getColor(R.color.colorKnob)));
             typedArray.recycle();
         }
 
+
+    }
+    public void setVolume(int dialVolume){
+        this.dialVolume = dialVolume;
+    }
+
+    public int getVolume() {
+        return dialVolume;
+    }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                Log.d(TAG, "Action was DOWN");
+                volumeStart = (int) event.getX();
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.d(TAG, "Action was MOVE");
+                volumeEnd = (int) event.getX();
+                volumeDistance = (volumeEnd - volumeStart)/95;
+                knobRotation = knobRotation + volumeDistance;
+                if(knobRotation < minRotate){
+                    knobRotation = minRotate;
+                }
+                if(knobRotation > maxRotate){
+                    knobRotation = maxRotate;
+                }
+                setVolume((int)(knobRotation/2.55f));
+                invalidate();
+                break;
+            case MotionEvent.ACTION_UP:
+                Log.d(TAG, "Action was UP");
+//                Toast.makeText(getContext(), dialVolume, Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        canvas.rotate(knobRotation, width, height);
 
         width = getWidth() / 2f;
         height = getHeight() / 2f;
@@ -72,49 +110,15 @@ public class VolumeControlView extends View {
         } else {
             outerCircleRadius = height *1f;
             innerCircleRadius = height *.75f;
-            knobDistanceFromCenter = height *.3f;
+            knobDistanceFromCenter = height *.5f;
         }
-        knobRadius = knobDistanceFromCenter * 0.6f;
+        knobRadius = knobDistanceFromCenter * 0.3f;
 
         canvas.drawCircle(width, height, outerCircleRadius, outerCirclePaint);
         canvas.drawCircle(width, height, innerCircleRadius, innerCirclePaint);
-        canvas.drawCircle(width/3, height/3, innerCircleRadius/3, knobPaint);
+        canvas.drawCircle(width/2, height/2, innerCircleRadius/5, knobPaint);
 
-
-        canvas.rotate(knobRotation, width, height);
-
-        innerCirclePaint.setColor(getResources().getColor(R.color.colorInnerCircle));
-        outerCirclePaint.setColor(getResources().getColor(R.color.colorOuterCircle));
-        knobPaint.setColor(getResources().getColor(R.color.colorKnob));
+        
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                volumeStart = (int) event.getX();
-                Log.d(TAG, "Action was DOWN");
-                break;
-            case MotionEvent.ACTION_MOVE:
-                volumeEnd = (int) event.getX();
-                volumeRadius = (volumeEnd - volumeStart)/100;
-                knobRotation = knobRotation + (volumeRadius);
-                if(knobRotation < minRotate){
-                    knobRotation = minRotate;
-                }
-                if(knobRotation > maxRotate){
-                    knobRotation = maxRotate;
-                }
-                setVolume(knobRotation);
-                invalidate();
-                break;
-            case MotionEvent.ACTION_UP:
-                Log.d(TAG, "Action was UP");
-                break;
-        }
-        return true;
-    }
-    public void setVolume(int dialVolume){
-        this.dialVolume = dialVolume;
-    }
 }
