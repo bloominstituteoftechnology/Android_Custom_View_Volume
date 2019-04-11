@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -21,9 +20,9 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
     public static final int GET_AND_SET_VOLUME_MAX_VALUE = 10;
     public static final int LEFT_JUSTIFY = 140;
     public static final int TOP_JUSTIFY = 430;
-    public static final int X_PIVOT_JUSTIFY = 2;
-    public static final int Y_PIVOT_JUSTIFY = 43;
-    float x = 0, y = 0;
+    public static final int X_PIVOT_OFFSET = 2;
+    public static final int Y_PIVOT_OFFSET = 43;
+    public static final int PIXEL_TO_DEGREE_MODIFIER = 3;
     float touchX, touchY;
     float rotation;
     private Paint paint;
@@ -31,12 +30,12 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
 
     @Override
     public float getPivotX() { //overrides pivot points to finely tune them
-        return super.getPivotX() + X_PIVOT_JUSTIFY;
+        return super.getPivotX() + X_PIVOT_OFFSET;
     }
 
     @Override
     public float getPivotY() {
-        return super.getPivotY() + Y_PIVOT_JUSTIFY;
+        return super.getPivotY() + Y_PIVOT_OFFSET;
     }
 
     public VolumeSpinner(Context context) {
@@ -85,7 +84,7 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
             case MotionEvent.ACTION_MOVE:
 
                 float diffX = event.getX() - touchX;
-                rotation += diffX / 3;
+                rotation += diffX / PIXEL_TO_DEGREE_MODIFIER;
                 touchX = event.getX();
                 invalidate();
                 break;
@@ -106,7 +105,7 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
 
 
         canvas.drawBitmap(bitmap, LEFT_JUSTIFY, TOP_JUSTIFY, paint);
-        //canvas.drawCircle(getPivotX() + X_PIVOT_JUSTIFY, getPivotY() + Y_PIVOT_JUSTIFY, 15, paint); //reenable to see pivot point
+        //canvas.drawCircle(getPivotX() + X_PIVOT_OFFSET, getPivotY() + Y_PIVOT_OFFSET, 15, paint); //reenable to see pivot point
 
 
         //canvas.drawCircle(getPivotX() -200, getPivotY(), 30, paint); //reenable to explore painting the dial indicator
