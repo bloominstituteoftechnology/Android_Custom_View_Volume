@@ -15,6 +15,7 @@ public class VolumeKnob extends View {
     OvalShape knobPointer;
     Paint paintKnob, paintKnobPointer;
     float touchX, rotation;
+    int volume;
 
     public VolumeKnob(Context context) {
         super(context);
@@ -36,6 +37,17 @@ public class VolumeKnob extends View {
         init();
     }
 
+    public int getVolume(){
+        if(rotation > 120){
+            rotation = 120f;
+        }else if(rotation < -120){
+            rotation = -120;
+        }
+        volume = (int) rotation + 120;
+        int percentVolume = (int) (volume / 2.4);
+        return percentVolume;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
@@ -48,6 +60,10 @@ public class VolumeKnob extends View {
                 touchX = event.getX();
                 invalidate();
                 break;
+            case MotionEvent.ACTION_UP:
+                volume = getVolume();
+                MainActivity.setVolumeText(volume);
+
         }
         return true;
     }
