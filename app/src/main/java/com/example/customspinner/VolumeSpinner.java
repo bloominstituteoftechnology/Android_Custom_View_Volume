@@ -29,6 +29,16 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
     private Paint paint;
     private Bitmap bitmap;
 
+    @Override
+    public float getPivotX() { //overrides pivot points to finely tune them
+        return super.getPivotX() + X_PIVOT_JUSTIFY;
+    }
+
+    @Override
+    public float getPivotY() {
+        return super.getPivotY() + Y_PIVOT_JUSTIFY;
+    }
+
     public VolumeSpinner(Context context) {
         super(context);
         init(context, null);
@@ -54,17 +64,13 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
 
 
         if (attrs != null) {
-            TypedArray typedArray = getContext().obtainStyledAttributes( //sets defaults from the XML
-                    attrs,
-                    R.styleable.VolumeSpinner);
-
-            setVolume(typedArray.getFloat(
-                    R.styleable.VolumeSpinner_start_volume,
-                    0));
-
+            TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.VolumeSpinner);
+            setVolume(typedArray.getFloat(R.styleable.VolumeSpinner_start_volume, 0));
+            typedArray.recycle();
         } else {
             setVolume(5);
         }
+
 
 
     }
@@ -77,6 +83,7 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
                 touchY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+
                 float diffX = event.getX() - touchX;
                 rotation += diffX / 3;
                 touchX = event.getX();
@@ -93,9 +100,16 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
         super.onDraw(canvas);
         if (rotation < VOL_LOWER_BOUND) rotation = VOL_LOWER_BOUND; //keep rotation in bounds
         if (rotation > VOL_UPPER_BOUND) rotation = VOL_UPPER_BOUND;
-        canvas.rotate(rotation, getPivotX() + X_PIVOT_JUSTIFY, getPivotY() + Y_PIVOT_JUSTIFY); //finely tuned pivot points
+        canvas.rotate(rotation, getPivotX(), getPivotY()); //finely tuned pivot points
+
+
+
+
         canvas.drawBitmap(bitmap, LEFT_JUSTIFY, TOP_JUSTIFY, paint);
         //canvas.drawCircle(getPivotX() + X_PIVOT_JUSTIFY, getPivotY() + Y_PIVOT_JUSTIFY, 15, paint); //reenable to see pivot point
+
+
+        //canvas.drawCircle(getPivotX() -200, getPivotY(), 30, paint); //reenable to explore painting the dial indicator
     }
 
     public float getVolume() { //returns a float 0-10
