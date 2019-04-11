@@ -1,5 +1,6 @@
 package com.vivekvishwanath.android_custom_view_volume.views;
 
+import android.app.Service;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 public class VolumeKnob extends View {
 
@@ -17,6 +19,8 @@ public class VolumeKnob extends View {
     float cX, cY;
     float rotation, touchX;
     float minAngle = -150f; float maxAngle = 150f;
+    AudioManager audioManager;
+    int maxVolume;
 
 
     public VolumeKnob(Context context) {
@@ -48,6 +52,8 @@ public class VolumeKnob extends View {
         knobCircle.setColor(getResources().getColor(android.R.color.holo_red_dark));
 
         rotation = minAngle;
+        audioManager = (AudioManager) getContext().getSystemService(Service.AUDIO_SERVICE);
+        maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 
     }
 
@@ -62,6 +68,9 @@ public class VolumeKnob extends View {
         canvas.drawCircle(cX, cY, (cX < cY ? cX : cY) * 0.7f, innerCircle);
         float knobCY = cY - ((cX < cY ? cX : cY) * 0.5f);
         canvas.drawCircle(cX, knobCY, knobCY * 0.1f, knobCircle);
+
+        int newVolume = (int) (maxVolume * ((Math.abs(minAngle) + rotation) / (maxAngle - minAngle)));
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0);
 
         super.onDraw(canvas);
     }
@@ -83,6 +92,9 @@ public class VolumeKnob extends View {
                     }
                 break;
             case MotionEvent.ACTION_UP:
+                String volumePercent =
+                        Integer.toString((100 * audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)) / maxVolume);
+                Toast.makeText(getContext(),volumePercent, Toast.LENGTH_LONG).show();
                 break;
 
         }
