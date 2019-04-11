@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioManager;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class VolumeKnob extends View {
@@ -13,6 +15,9 @@ public class VolumeKnob extends View {
     Paint outerCircle, innerCircle, knobCircle;
     int outerColor, innerColor, knobColor;
     float cX, cY;
+    float rotation, touchX;
+    float minAngle = -150f; float maxAngle = 150f;
+
 
     public VolumeKnob(Context context) {
         super(context);
@@ -42,6 +47,7 @@ public class VolumeKnob extends View {
         knobCircle = new Paint();
         knobCircle.setColor(getResources().getColor(android.R.color.holo_red_dark));
 
+        rotation = minAngle;
 
     }
 
@@ -51,10 +57,31 @@ public class VolumeKnob extends View {
         cX = getWidth() / 2f;
         cY = getHeight() / 2f;
 
+        canvas.rotate(rotation, cX, cY);
         canvas.drawCircle(cX, cY, (cX < cY ? cX : cY) * 0.8f, outerCircle);
         canvas.drawCircle(cX, cY, (cX < cY ? cX : cY) * 0.7f, innerCircle);
         float knobCY = cY - ((cX < cY ? cX : cY) * 0.5f);
         canvas.drawCircle(cX, knobCY, knobCY * 0.1f, knobCircle);
+
         super.onDraw(canvas);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                touchX = event.getX();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float diffX = event.getX() - touchX;
+                    rotation += (maxAngle - minAngle) * (diffX / getWidth());
+                    touchX = event.getX();
+                    invalidate();
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+
+        }
+        return true;
     }
 }
