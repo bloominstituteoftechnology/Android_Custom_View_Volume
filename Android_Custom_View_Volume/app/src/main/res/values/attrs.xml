@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="VolumeControlView">
+
+        <attr name="knobColor" format="color"/>
+        <attr name="knobPointerColor" format="color"/>
+        <attr name="volumeLevel" format ="float"/>
+
+    </declare-styleable>
+
+
+</resources>
