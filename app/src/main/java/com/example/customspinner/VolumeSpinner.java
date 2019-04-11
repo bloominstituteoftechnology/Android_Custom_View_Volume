@@ -5,23 +5,26 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ImageView;
+
+import static java.lang.Math.abs;
 
 public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView {
 
+    public static final int VOL_UPPER_BOUND = 175;
+    public static final int VOL_LOWER_BOUND = -100;
+    public static final int GET_AND_SET_VOLUME_MAX_VALUE = 10;
+    public static final int LEFT_JUSTIFY = 140;
+    public static final int TOP_JUSTIFY = 430;
+    public static final int X_PIVOT_JUSTIFY = 2;
+    public static final int Y_PIVOT_JUSTIFY = 43;
     float x = 0, y = 0;
     float touchX, touchY;
     float rotation = 0;
     private Paint paint;
-    private Canvas canvas;
-    private Canvas canvas2;
-    private Resources resources;
     private Bitmap bitmap;
 
     public VolumeSpinner(Context context) {
@@ -40,10 +43,8 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
     }
 
     private void init(Context context) {
-        canvas = new Canvas();
-        canvas2 = new Canvas();
         paint = new Paint();
-        resources = context.getResources();
+        Resources resources = context.getResources();
         bitmap = BitmapFactory
                 .decodeResource(resources, R.drawable.knobtrans);
 
@@ -58,22 +59,10 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
                 touchY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-
                 float diffX = event.getX() - touchX;
-
                 rotation += diffX / 3;
                 touchX = event.getX();
-
                 invalidate();
-
-
-
-                /*float diffX = event.getX() - touchX; //move box with your mouse
-                float diffY = event.getY() - touchY;
-                x += diffX;
-                y += diffY;
-                touchX = event.getX();
-                touchY = event.getY();*/
                 break;
             case MotionEvent.ACTION_UP:
                 break;
@@ -84,19 +73,22 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas2.drawColor(Color.RED);
+        if (rotation < VOL_LOWER_BOUND) rotation = VOL_LOWER_BOUND; //keep rotation in bounds
+        if (rotation > VOL_UPPER_BOUND) rotation = VOL_UPPER_BOUND;
+        canvas.rotate(rotation, getPivotX() + X_PIVOT_JUSTIFY, getPivotY() + Y_PIVOT_JUSTIFY); //finely tuned pivot points
+        canvas.drawBitmap(bitmap, LEFT_JUSTIFY, TOP_JUSTIFY, paint);
+        //canvas.drawCircle(getPivotX() + X_PIVOT_JUSTIFY, getPivotY() + Y_PIVOT_JUSTIFY, 15, paint); //reenable to see pivot point
+    }
 
-        if (rotation > 175) rotation = 175;
-        if (rotation < -100) rotation = -100;
-
-
-        canvas.rotate(rotation, getPivotX() + 2, getPivotY() + 43);
-
-
-        canvas.drawBitmap(bitmap, 140, 430, paint);
-
-
-        //canvas.drawCircle(getPivotX() + 2, getPivotY() + 43, 15, paint); //reenable to see pivot point
-
+    public float getVolume() { //returns a float 0-10
+        float range = abs(VOL_LOWER_BOUND) + abs(VOL_UPPER_BOUND);
+        float volume = abs(VOL_LOWER_BOUND)+rotation;
+        volume = (volume/range)* GET_AND_SET_VOLUME_MAX_VALUE;
+        return volume;
+    }
+    public void setVolume(float volume) { //interprets anything above GET_AND_SET_VOLUME_MAX_VALUE as the max value
+        float range = abs(VOL_LOWER_BOUND) + abs(VOL_UPPER_BOUND);
+        volume = (volume/ GET_AND_SET_VOLUME_MAX_VALUE) * range;
+        rotation = volume;
     }
 }
