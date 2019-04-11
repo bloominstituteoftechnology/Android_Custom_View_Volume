@@ -13,10 +13,11 @@ import android.view.View;
 public class VolumeControl extends View {
 
     public static final int OFFSET = 15;
+    public static final int ROTATION_FACTOR = 75;
     Paint outerCircle, innerCircle, volumeKnob;
-    float startPoint = 0.0f, endPoint = 0.0f, distanceTraveled = 0.0f;
-    float rotation = 0.0f;
-    float rotationMin = 0.0f, rotationMax = 255.0f;
+    int startPoint = 0, endPoint = 0, distanceTraveled = 0;
+    int rotation = 0;
+    int rotationMin = 0, rotationMax = 255;
 
 
     public VolumeControl(Context context) {
@@ -41,37 +42,25 @@ public class VolumeControl extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch(event.getAction()) {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                startPoint = event.getX();
-
+                startPoint = (int) event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
-                // get end point
-                endPoint = event.getX();
-                //calculate total distance traveled
-                distanceTraveled = endPoint - startPoint;
-                // use the total distance traveled to calculate the desired change in rotation
-
-                // apply that change to your rotation variable
-                rotation += endPoint;
-                // you may want to use a minimum and maximum rotation value to limit the rotation
+                endPoint = (int) event.getX();
+                distanceTraveled = (endPoint - startPoint) / ROTATION_FACTOR;
+                rotation += distanceTraveled;
                 if(rotation < rotationMin){
                     rotation = rotationMin;
                 }
                 if(rotation > rotationMax){
                     rotation = rotationMax;
                 }
-
-                // use the new rotation to convert to the desired volume setting
-
-                // this will cause the onDraw method to be called again with your new values
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
                 break;
         }
-
         return true;
     }
 
@@ -96,15 +85,15 @@ public class VolumeControl extends View {
 
         canvas.rotate(rotation, width, height);
 
-        float radius = 100;
+        int radius = 100;
         if(width < height){
-            radius = width - OFFSET;
+            radius = (int)(width) - OFFSET;
         }else if (height < width){
-            radius = height - OFFSET;
+            radius = (int)(height) - OFFSET;
         }
 
-        float innerCircleRadius = radius * .92f;
-        float smallInnerCircleRadius = radius * .08f;
+        int innerCircleRadius = (int) (radius * .92f);
+        int smallInnerCircleRadius = (int) (radius * .08f);
 
         canvas.drawCircle(width, height, radius, outerCircle);
         canvas.drawCircle(width, height, innerCircleRadius, innerCircle);
