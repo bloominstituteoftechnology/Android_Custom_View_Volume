@@ -2,9 +2,11 @@ package com.example.customspinner;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -23,36 +25,52 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
     public static final int Y_PIVOT_JUSTIFY = 43;
     float x = 0, y = 0;
     float touchX, touchY;
-    float rotation = 0;
+    float rotation;
     private Paint paint;
     private Bitmap bitmap;
 
     public VolumeSpinner(Context context) {
         super(context);
-        init(context);
+        init(context, null);
     }
 
     public VolumeSpinner(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init(context, attrs);
+
     }
 
     public VolumeSpinner(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init(context, attrs);
     }
 
-    private void init(Context context) {
+    private void init(Context context, AttributeSet attrs) { // initializes the drawable and the defaults
         paint = new Paint();
         Resources resources = context.getResources();
         bitmap = BitmapFactory
                 .decodeResource(resources, R.drawable.knobtrans);
-
         bitmap = Bitmap.createScaledBitmap(bitmap, 700, 700, false);
+
+
+        if (attrs != null) {
+            TypedArray typedArray = getContext().obtainStyledAttributes( //sets defaults from the XML
+                    attrs,
+                    R.styleable.VolumeSpinner);
+
+            setVolume(typedArray.getFloat(
+                    R.styleable.VolumeSpinner_start_volume,
+                    0));
+
+        } else {
+            setVolume(5);
+        }
+
+
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) { //Handles moving the volume knob
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 touchX = event.getX();
@@ -71,7 +89,7 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) { //does the calculations for drawing
         super.onDraw(canvas);
         if (rotation < VOL_LOWER_BOUND) rotation = VOL_LOWER_BOUND; //keep rotation in bounds
         if (rotation > VOL_UPPER_BOUND) rotation = VOL_UPPER_BOUND;
@@ -88,7 +106,7 @@ public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView 
     }
     public void setVolume(float volume) { //interprets anything above GET_AND_SET_VOLUME_MAX_VALUE as the max value
         float range = abs(VOL_LOWER_BOUND) + abs(VOL_UPPER_BOUND);
-        volume = (volume/ GET_AND_SET_VOLUME_MAX_VALUE) * range;
+        volume = ((volume/ GET_AND_SET_VOLUME_MAX_VALUE) * range) - abs(VOL_LOWER_BOUND);
         rotation = volume;
     }
 }

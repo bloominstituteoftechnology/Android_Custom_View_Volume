@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--add attributes to pass values in the xml-->
+    <declare-styleable name="VolumeSpinner">
+        <attr name="start_volume" format="float"/>
+        <!--<attr name="line_thickness" format="float"/ KEPT IN AS A REFERENCE>-->
+        <!--<attr name="line_offset" format="integer"/>-->
+    </declare-styleable>
+</resources>
