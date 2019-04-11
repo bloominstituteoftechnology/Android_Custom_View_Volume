@@ -9,8 +9,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class VolumeKnobView extends View {
-    Paint paint;
-    float x, y, radius;
+    Paint paint,paintSmallCircle;
+    float x, y, radius,smallX,smallY,smallRadius;
     public VolumeKnobView(Context context) {
         super(context);
         init();
@@ -40,14 +40,24 @@ public class VolumeKnobView extends View {
         x = 0;
         radius = 0;
 
+        paintSmallCircle = new Paint();
+        paintSmallCircle.setColor(Color.RED);
+        paintSmallCircle.setFlags(Paint.ANTI_ALIAS_FLAG);
+        paintSmallCircle.setStyle(Paint.Style.FILL);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         x = getWidth()/2;
         y = getHeight()/2;
+        smallX = (float) (x-(x/2.5));
         radius = getWidth()/4;
+        smallY = y;
+        smallRadius = radius/16;
+
         canvas.drawCircle(x,y,radius,paint);
+        canvas.drawCircle(smallX,smallY,smallRadius,paintSmallCircle);
+
         super.onDraw(canvas);
     }
 }
