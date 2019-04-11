@@ -73,10 +73,14 @@ public class VolumeKnob extends View {
                 touchX = event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
-                float diffX = event.getX() - touchX;
-                    rotation += (maxAngle - minAngle) * (diffX / getWidth());
-                    touchX = event.getX();
-                    invalidate();
+                    float diffX = event.getX() - touchX;
+                    float changeInRotation = (maxAngle - minAngle) * (diffX / getWidth());
+                    if (rotation + changeInRotation > minAngle &&
+                            rotation + changeInRotation < maxAngle) {
+                        rotation += (maxAngle - minAngle) * (diffX / getWidth());
+                        touchX = event.getX();
+                        invalidate();
+                    }
                 break;
             case MotionEvent.ACTION_UP:
                 break;
