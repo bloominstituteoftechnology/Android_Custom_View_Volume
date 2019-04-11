@@ -19,7 +19,7 @@ public class VolumeControlView extends View {
     private static final int MINIMUM_ROTATION_VALUE = 0;
     private static final int MAXIMUM_ROTATION_VALUE = 255;
     private static final int ROTATION_FACTOR = 95;
-    private static final int EDGE_OFFSET = 20;
+    private static final int EDGE_OFFSET = 40;
 
     protected Paint paint1, paint2, paint3;
     protected int circleRotation = 0;
@@ -41,10 +41,6 @@ public class VolumeControlView extends View {
         init(attrs);
     }
 
-    public VolumeControlView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(attrs);
-    }
 
     protected void init(AttributeSet attrs){
         paint1 = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -75,7 +71,32 @@ public class VolumeControlView extends View {
         //Log.i("currentVolume", Integer.toString(this.currentVolume));
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                circleStartPoint = (int) event.getX();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                circleEndPoint = (int) event.getX();
+                distanceTraveled = (circleEndPoint - circleStartPoint) / ROTATION_FACTOR;
+                circleRotation = circleRotation + (distanceTraveled);
+                if(circleRotation < MINIMUM_ROTATION_VALUE){
+                    circleRotation = MINIMUM_ROTATION_VALUE;
+                }
+                if(circleRotation > MAXIMUM_ROTATION_VALUE){
+                    circleRotation = MAXIMUM_ROTATION_VALUE;
+                }
+                setCurrentVolume((int) (circleRotation / CONVERT_DEGREE_TO_INT_FACTOR));
+                Toast.makeText(getContext(), "Volume is at " + currentVolume + "%", Toast.LENGTH_SHORT).show();
 
+                invalidate();
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+        }
+        return true;
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
