@@ -2,6 +2,8 @@ package com.rybarstudios.volumecontrol;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -9,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class VolumeControl extends View {
+
+    Paint paint;
+    float rotation = 0.0f;
 
 
     public VolumeControl(Context context) {
@@ -46,11 +51,25 @@ public class VolumeControl extends View {
     }
 
     private void init() {
-
+        paint = new Paint();
+        paint.setColor(Color.GREEN);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+
+        float width = getWidth() / 2.0f;
+        float height = getHeight() / 2.0f;
+        float radius = 100;
+
+        if(width > height) {
+            radius = height;
+        }else {
+            radius = width;
+        }
+
+        canvas.drawCircle(width, height, radius, paint);
+
         super.onDraw(canvas);
     }
 }
