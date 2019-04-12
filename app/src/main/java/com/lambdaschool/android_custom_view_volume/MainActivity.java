@@ -2,6 +2,7 @@ package com.lambdaschool.android_custom_view_volume;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -2,7 +2,7 @@
 <resources>
 <declare-styleable name="VolumeControlKnob">
     <attr name="line_color" format="color"/>
-    <attr name="line_offset" format="integer"/>
     <attr name="line_thickness" format="float"/>
+    <attr name="anti_aliasing" format="boolean"/>
 </declare-styleable>
 </resources>
