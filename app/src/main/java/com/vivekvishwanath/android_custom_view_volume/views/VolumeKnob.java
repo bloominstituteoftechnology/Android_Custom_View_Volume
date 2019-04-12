@@ -46,8 +46,8 @@ public class VolumeKnob extends View {
     }
 
     public void setVolume(int volume) {
-        if (volume >= 0 && volume <= audioManager.getStreamMaxVolume(AudioManager.USE_DEFAULT_STREAM_TYPE)) {
-            rotation = minAngle + ((float) volume / audioManager.getStreamMaxVolume(AudioManager.USE_DEFAULT_STREAM_TYPE)
+        if (volume >= 0 && volume <= audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)) {
+            rotation = minAngle + ((float) volume / audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
                     * maxAngle - minAngle);
         }
     }
@@ -111,9 +111,9 @@ public class VolumeKnob extends View {
                     }
                 break;
             case MotionEvent.ACTION_UP:
-                String volumePercent =
-                        Integer.toString((100 * audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)) / maxVolume);
-                Toast.makeText(getContext(),volumePercent, Toast.LENGTH_LONG).show();
+                String volume =
+                        Integer.toString((audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)));
+                Toast.makeText(getContext(),volume, Toast.LENGTH_LONG).show();
                 break;
 
         }
