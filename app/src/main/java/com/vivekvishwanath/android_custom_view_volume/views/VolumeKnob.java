@@ -2,6 +2,7 @@ package com.vivekvishwanath.android_custom_view_volume.views;
 
 import android.app.Service;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,10 +13,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.vivekvishwanath.android_custom_view_volume.R;
+
 public class VolumeKnob extends View {
 
     Paint outerCircle, innerCircle, knobCircle;
-    int outerColor, innerColor, knobColor;
     float cX, cY;
     float rotation, touchX;
     float minAngle = -150f; float maxAngle = 150f;
@@ -25,31 +27,43 @@ public class VolumeKnob extends View {
 
     public VolumeKnob(Context context) {
         super(context);
-        init();
+        init(null);
     }
 
     public VolumeKnob(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(attrs);
     }
 
     public VolumeKnob(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(attrs);
     }
 
     public VolumeKnob(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        init(attrs);
     }
 
-    private void init() {
-        outerCircle = new Paint();
-        outerCircle.setColor(getResources().getColor(android.R.color.holo_red_dark));
+    public void setVolume(int volume) {
+        if (volume >= 0 && volume <= audioManager.getStreamMaxVolume(AudioManager.USE_DEFAULT_STREAM_TYPE)) {
+            
+        }
+    }
+
+    private void init(AttributeSet attrs) {
         innerCircle = new Paint();
         innerCircle.setColor(getResources().getColor(android.R.color.black));
+        outerCircle = new Paint();
         knobCircle = new Paint();
-        knobCircle.setColor(getResources().getColor(android.R.color.holo_red_dark));
+
+        if (attrs != null) {
+            TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.VolumeKnob);
+            outerCircle.setColor(typedArray.getColor(R.styleable.VolumeKnob_border_color,
+                    getResources().getColor(R.color.colorAccent)));
+            knobCircle.setColor(typedArray.getColor(R.styleable.VolumeKnob_knob_color,
+                    getResources().getColor(R.color.colorAccent)));
+        }
 
         rotation = minAngle;
         audioManager = (AudioManager) getContext().getSystemService(Service.AUDIO_SERVICE);
