@@ -47,8 +47,13 @@ public class VolumeKnob extends View {
 
     public void setVolume(int volume) {
         if (volume >= 0 && volume <= audioManager.getStreamMaxVolume(AudioManager.USE_DEFAULT_STREAM_TYPE)) {
-            
+            rotation = minAngle + ((float) volume / audioManager.getStreamMaxVolume(AudioManager.USE_DEFAULT_STREAM_TYPE)
+                    * maxAngle - minAngle);
         }
+    }
+
+    public int getVolume() {
+        return audioManager.getStreamVolume(AudioManager.USE_DEFAULT_STREAM_TYPE);
     }
 
     private void init(AttributeSet attrs) {
