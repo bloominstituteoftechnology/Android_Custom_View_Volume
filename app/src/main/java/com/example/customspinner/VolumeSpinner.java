@@ -15,7 +15,7 @@ import static java.lang.Math.abs;
 
 public class VolumeSpinner extends android.support.v7.widget.AppCompatImageView {
 
-    public static final int VOL_UPPER_BOUND = 175;
+    public static final int VOL_UPPER_BOUND = 170;
     public static final int VOL_LOWER_BOUND = -100;
     public static final int GET_AND_SET_VOLUME_MAX_VALUE = 10;
     public static final int LEFT_JUSTIFY = 140;
