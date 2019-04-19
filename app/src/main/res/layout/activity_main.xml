@@ -5,16 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-<com.example.android_custom_view_volume.GraphicsView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    <com.example.android_custom_view_volume.DialView
+        android:id="@+id/dial_volume"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/text_values"
+        android:layout_width="191dp"
+        android:layout_height="111dp"
         android:text="Hello World!"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.443"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.179" />
 
 </android.support.constraint.ConstraintLayout>
