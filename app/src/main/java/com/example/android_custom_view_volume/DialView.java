@@ -1,7 +1,9 @@
 package com.example.android_custom_view_volume;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,27 +25,24 @@ public class DialView extends View {
     private Paint paint, paint1;
     private float fX;    // 図形を描画する X 座標    // (1)
     private float fY;    // 図形を描画する Y 座標    // (2)
-    private float fXoriginal;    // 図形を描画する X 座標    // (1)
-    private float fYoriginal;    // 図形を描画する Y 座標    // (2)
-    private float fRadius;    // 円の半径    // (3)
     private double dTheta;
-    private double dRotation=-60;
+    private double dRotation=-60; //Degree of Dial starting point from horizontal line
     int iCenterX=500;
     int iCenterY=500;
-    int iDialRadius=300;
-    int iDotRaidus=50;
+    int iDialRadius=300;// Radius of Dial
+    int iDotRaidus=50;// Radius of a dot
     int iWidthCanvas ;
     int iHeightCanvas;
 
 
     public DialView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        initialize();
+        initialize(attrs);
     }
 
     public DialView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initialize();
+        initialize(attrs);
     }
 
     public DialView(Context context) {
@@ -77,7 +76,57 @@ public class DialView extends View {
         fX = iCenterX;
         fY = iCenterY-iDialRadius;
 
+
     }
+    @SuppressLint("ResourceType")
+    private void initialize(AttributeSet attrs) {
+        Context context=getContext();
+        TypedArray typedArray=context.obtainStyledAttributes(attrs,R.styleable.DialView);
+        // 画面のサイズを取得する
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+        iWidthCanvas = display.getWidth();
+        iHeightCanvas = display.getHeight();
+        iCenterX=iWidthCanvas/2;
+        iCenterY=iHeightCanvas/2;
+
+        if(attrs!=null){
+
+            paint1 = new Paint();
+            paint1.setAntiAlias(true);
+       //     paint1.setColor(typedArray.getColor(R.color.colorAccent,Color.DKGRAY));    // (4)
+            paint1.setStyle(Style.FILL);    // (5)
+
+
+            // ペイントオブジェクトを設定する
+            paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setColor(Color.RED);    // (4)
+            paint.setStyle(Style.FILL);    // (5)
+
+            // 丸を描画する初期値を設定する
+            fX = iCenterX;
+            fY = iCenterY-iDialRadius;
+
+        }else{
+            paint1 = new Paint();
+            paint1.setAntiAlias(true);
+            paint1.setColor(Color.BLACK);    // (4)
+            paint1.setStyle(Style.FILL);    // (5)
+
+
+            // ペイントオブジェクトを設定する
+            paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setColor(Color.RED);    // (4)
+            paint.setStyle(Style.FILL);    // (5)
+
+            // 丸を描画する初期値を設定する
+            fX = iCenterX;
+            fY = iCenterY-iDialRadius;
+        }
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -162,8 +211,9 @@ public class DialView extends View {
                 double dSin=dY/dC;
                 dTheta=getTheta(dCos,dSin,dRotation);
                 if(dSin>Math.sin(Math.toRadians(dRotation))) {
-                    fX = -(float) (dCos * 300) + iCenterX;
-                    fY = -(float) (dSin * 300) + iCenterY;
+                    float fTX=-(float) (dCos * 300) + iCenterX,
+                          fTY=-(float) (dSin * 300) + iCenterY;
+                    //color chages depends on rate
                     int p=getPercent(dRotation);
                     if(p<25 ){
                         paint.setColor(Color.BLUE);
@@ -174,6 +224,18 @@ public class DialView extends View {
                     }else {
                         paint.setColor(Color.RED);
                     }
+                    //prevents from skipping from min to max or from max to min
+                    if(fTX>iCenterX&&fX>iCenterX){
+                        fX=fTX;
+                        fY=fTY;
+                    }else if(fTX<=iCenterX&&fX<=iCenterX){
+                        fX=fTX;
+                        fY=fTY;
+                    }else if(fTY<iCenterY&&fY<iCenterY){
+                        fX=fTX;
+                        fY=fTY;
+                    }
+
                 }
                 invalidate();
                 break;

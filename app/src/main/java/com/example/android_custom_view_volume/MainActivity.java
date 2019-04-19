@@ -13,15 +13,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         final DialView gv=findViewById(R.id.dial_volume);
 
-        gv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final TextView tv=findViewById(R.id.text_values);
-                tv.setText(gv.getValues());
-                tv.invalidate();
 
-            }
-        });
 
 
 
