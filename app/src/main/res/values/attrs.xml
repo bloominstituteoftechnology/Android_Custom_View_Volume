@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
 <declare-styleable name="VolumeControlKnob">
     <attr name="line_color" format="color"/>
     <attr name="line_thickness" format="float"/>
     <attr name="anti_aliasing" format="boolean"/>
 </declare-styleable>
+
 </resources>
