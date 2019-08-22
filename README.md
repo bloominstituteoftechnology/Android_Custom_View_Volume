@@ -15,26 +15,26 @@ For this app, you'll design a custom volume control knob view. The resulting vie
 
 2. Override `onTouchEvent` to handle interaction with your view. Your view should now rotate on swipe.
 > The following code skeleton shows how this can be done:
-> ```Java
-> @Override
-> public boolean onTouchEvent(MotionEvent event) { // triggered each time the touch state changes 
-> 	switch (event.getAction()) {
->         case MotionEvent.ACTION_DOWN: // triggered when view is touched
->             // get and store start point with event.getX()
->             break;
->         case MotionEvent.ACTION_MOVE: // triggered after ACTION_DOWN but when touch is moved
->             // get end point and calculate total distance traveled
->             // use the total distance traveled to calculate the desired change in rotation
->             // apply that change to your rotation variable
->             // you may want to use a minimum and maximum rotation value to limit the rotation
->             // use the new rotation to convert to the desired volume setting
->             invalidate(); // this will cause the onDraw method to be called again with your new values
->             break;
->         case MotionEvent.ACTION_UP: // triggered when touch ends
->             break;
->     }
->     return true; // this indicates that the event has been processed
-> }
+> ```Kotlin
+> override fun onTouchEvent(event: MotionEvent): Boolean { // triggered each time the touch state changes 
+>    when (event.action) {
+>        MotionEvent.ACTION_DOWN // triggered when view is touched
+>        -> {
+>        }
+>        MotionEvent.ACTION_MOVE // triggered after ACTION_DOWN but when touch is moved
+>        ->
+>            // get end point and calculate total distance traveled
+>            // use the total distance traveled to calculate the desired change in rotation
+>            // apply that change to your rotation variable
+>            // you may want to use a minimum and maximum rotation value to limit the rotation
+>            // use the new rotation to convert to the desired volume setting
+>            invalidate() // this will cause the onDraw method to be called again with your new values
+>        MotionEvent.ACTION_UP // triggered when touch ends
+>        -> {
+>        }
+>    }// get and store start point with event.getX()
+>    return true // this indicates that the event has been processed
+>}
 > ```
 
 3. Write a getter and setter for the current volume setting
