@@ -78,7 +78,7 @@ class CustomView(context: Context, attrs: AttributeSet?):
     }
 
     override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
+
 
         canvas?.rotate(rotate, width/2f, height/2f)
 
@@ -87,6 +87,8 @@ class CustomView(context: Context, attrs: AttributeSet?):
 
        canvas?.drawCircle(width/2.0f, height/2f, 350f, paint)
         canvas?.drawCircle(width/3.0f, height/2.0f, 50f, paint2)
+
+        super.onDraw(canvas)
 
 
 
